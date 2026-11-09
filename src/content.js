@@ -30,30 +30,30 @@
       transition: filter .16s ease, opacity .16s ease, transform .2s cubic-bezier(.3, 1.6, .6, 1);
     }
     .ring { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
-    .shot:hover { background: rgba(180, 83, 42, .12); }
+    .shot:hover { background: rgba(181, 83, 43, .12); }
     .shot:hover .emoji, .shot:focus-visible .emoji { filter: none; opacity: 1; transform: scale(1.12); }
     .shot:active { transform: scale(.9); }
-    .shot:focus-visible { outline: 2px solid #B4532A; outline-offset: 1px; }
-    .shot[data-state="flagged"] { background: rgba(180, 83, 42, .16); box-shadow: inset 0 0 0 1.5px rgba(180, 83, 42, .6); }
+    .shot:focus-visible { outline: 2px solid #b5532b; outline-offset: 1px; }
+    .shot[data-state="flagged"] { background: rgba(181, 83, 43, .16); box-shadow: inset 0 0 0 1.5px rgba(181, 83, 43, .6); }
     :host([data-theme="dark"]) .shot:hover { background: rgba(222, 120, 80, .16); }
     :host([data-theme="dark"]) .shot[data-state="flagged"] { background: rgba(222, 120, 80, .2); box-shadow: inset 0 0 0 1.5px rgba(232, 132, 92, .8); }
-    .shot[data-state="confirmed"] { background: rgba(196, 154, 66, .22); box-shadow: inset 0 0 0 1.5px rgba(196, 154, 66, .8); }
+    .shot[data-state="confirmed"] { background: rgba(214, 174, 82, .22); box-shadow: inset 0 0 0 1.5px rgba(214, 174, 82, .85); }
     .shot[data-state="flagged"] .emoji, .shot[data-state="confirmed"] .emoji { filter: none; opacity: 1; }
     .shot[data-state="invalidated"] .emoji { opacity: .25; }
     .shot.fired .ring { animation: ring .55s ease-out; }
     .shot.fired .emoji { animation: recoil .45s cubic-bezier(.3, 1.5, .5, 1); }
     .shot.shake { animation: shake .32s ease; }
-    @keyframes ring { from { box-shadow: 0 0 0 0 rgba(180, 83, 42, .55); } to { box-shadow: 0 0 0 12px rgba(180, 83, 42, 0); } }
+    @keyframes ring { from { box-shadow: 0 0 0 0 rgba(181, 83, 43, .55); } to { box-shadow: 0 0 0 12px rgba(181, 83, 43, 0); } }
     @keyframes recoil { 30% { transform: scale(1.38) rotate(-8deg); } 60% { transform: scale(.94) rotate(3deg); } }
     @keyframes shake { 20% { transform: translateX(-3px); } 40% { transform: translateX(3px); } 60% { transform: translateX(-2px); } 80% { transform: translateX(2px); } }
 
     .bubble {
       position: fixed; left: 0; top: 0; z-index: 1;
       display: flex; align-items: center; gap: 8px; padding: 8px 11px;
-      border-radius: 999px; background: #2B1E14; color: #F6EFE1;
+      border-radius: 999px; background: #2a1c12; color: #faf4e7;
       font: 600 12px/1 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
       font-variant-numeric: tabular-nums; white-space: nowrap;
-      box-shadow: 0 8px 24px rgba(43, 30, 20, .28);
+      box-shadow: 0 8px 24px rgba(42, 28, 18, .28);
       opacity: 0; transform: translate(-50%, calc(-100% - 6px)) scale(.96);
       transition: opacity .16s ease, transform .2s cubic-bezier(.2, .9, .3, 1.2);
       pointer-events: none;
@@ -61,21 +61,21 @@
     .bubble.below { transform: translate(-50%, 6px) scale(.96); }
     .bubble.show { opacity: 1; transform: translate(-50%, calc(-100% - 10px)); }
     .bubble.below.show { transform: translate(-50%, 10px); }
-    :host([data-theme="dark"]) .bubble { background: #F6EFE1; color: #2B1E14; box-shadow: 0 8px 24px rgba(0, 0, 0, .5); }
+    :host([data-theme="dark"]) .bubble { background: #f2e9d6; color: #2a1c12; box-shadow: 0 8px 24px rgba(0, 0, 0, .5); }
     .pips { display: flex; gap: 3px; }
-    .pip { width: 5px; height: 12px; border-radius: 3px; background: linear-gradient(#E9C979, #B38A3E); }
+    .pip { width: 5px; height: 12px; border-radius: 3px; background: linear-gradient(#d6ae52, #a87a22); }
     .pip.spent { background: none; box-shadow: inset 0 0 0 1px currentColor; opacity: .3; }
     .wait { opacity: .7; }
-    .wait.empty { opacity: 1; color: #E0705F; }
-    :host([data-theme="dark"]) .wait.empty { color: #9E3B32; }
-    .points { color: #E9C979; font-weight: 700; }
-    :host([data-theme="dark"]) .points { color: #9A7428; }
+    .wait.empty { opacity: 1; color: #e2836c; }
+    :host([data-theme="dark"]) .wait.empty { color: #a23b2d; }
+    .points { color: #d6ae52; font-weight: 700; }
+    :host([data-theme="dark"]) .points { color: #a87a22; }
     .connect {
       all: unset; pointer-events: auto; cursor: pointer; padding: 6px 12px; margin: -3px -5px;
-      border-radius: 999px; background: #B4532A; color: #FBF6EC; font-weight: 700;
+      border-radius: 999px; background: #b5532b; color: #faf4e7; font-weight: 700;
     }
-    .connect:hover { background: #9C4322; }
-    .connect:focus-visible { outline: 2px solid #E9C979; outline-offset: 2px; }
+    .connect:hover { background: #8f3f1e; }
+    .connect:focus-visible { outline: 2px solid #d6ae52; outline-offset: 2px; }
 
     @media (prefers-reduced-motion: reduce) {
       .shot, .emoji, .bubble { transition: none; }
@@ -392,8 +392,8 @@
     bubble.setAttribute("role", "status");
     root.append(bubble);
     document.documentElement.append(host);
-    addEventListener("scroll", hideBubble, { passive: true });
-    return { host, bubble, timer: 0 };
+    addEventListener("scroll", followAnchor, { passive: true });
+    return { host, bubble, anchor: null, timer: 0, frame: 0 };
   }
 
   function say(button, content, ms = BUBBLE_MS) {
@@ -401,11 +401,8 @@
     if (!host.isConnected) document.documentElement.append(host);
     host.dataset.theme = theme;
     bubble.replaceChildren(content);
-    const rect = button.getBoundingClientRect();
-    const isBelow = rect.top < 64;
-    bubble.classList.toggle("below", isBelow);
-    bubble.style.left = `${rect.left + rect.width / 2}px`;
-    bubble.style.top = `${isBelow ? rect.bottom : rect.top}px`;
+    layer.anchor = button;
+    if (!placeBubble()) return;
     bubble.classList.remove("show");
     void bubble.offsetWidth;
     bubble.classList.add("show");
@@ -413,8 +410,33 @@
     layer.timer = setTimeout(hideBubble, ms);
   }
 
+  // The bubble sticks to its button while the page scrolls, including when X
+  // shifts the page as posts load, and goes away once the button does.
+  function placeBubble() {
+    const { anchor, bubble } = layer;
+    const rect = anchor?.isConnected ? anchor.getBoundingClientRect() : null;
+    if (!rect?.width || rect.bottom < 0 || rect.top > innerHeight) {
+      hideBubble();
+      return false;
+    }
+    const isBelow = rect.top < 64;
+    bubble.classList.toggle("below", isBelow);
+    bubble.style.left = `${rect.left + rect.width / 2}px`;
+    bubble.style.top = `${isBelow ? rect.bottom : rect.top}px`;
+    return true;
+  }
+
+  function followAnchor() {
+    if (!layer.anchor || layer.frame) return;
+    layer.frame = requestAnimationFrame(() => {
+      layer.frame = 0;
+      placeBubble();
+    });
+  }
+
   function hideBubble() {
     layer.bubble.classList.remove("show");
+    layer.anchor = null;
   }
 
   function el(tag, className, text) {
@@ -474,6 +496,7 @@
   function shutdown() {
     observer.disconnect();
     for (const type of SHIELDED) removeEventListener(type, shield, true);
+    removeEventListener("scroll", followAnchor);
     clearTimeout(badgeTimer);
     for (const entry of buttons) entry.host.remove();
     buttons.clear();

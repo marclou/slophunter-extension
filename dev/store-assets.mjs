@@ -14,7 +14,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "store");
 const POST = process.env.STORE_POST ?? "https://x.com/marclou/status/2119757141787787609";
 const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36";
-const font = `data:font/woff2;base64,${readFileSync(join(ROOT, "src/fonts/rye-latin.woff2")).toString("base64")}`;
+const font = `data:font/woff2;base64,${readFileSync(join(ROOT, "src/fonts/ultra-latin.woff2")).toString("base64")}`;
 const icon = `data:image/svg+xml;base64,${readFileSync(join(ROOT, "assets/icon.svg")).toString("base64")}`;
 const author = new URL(POST).pathname.split("/")[1];
 
@@ -52,13 +52,20 @@ await reply.waitFor({ timeout: 30_000 });
 await x.waitForTimeout(1500);
 await reply.scrollIntoViewIfNeeded();
 await x.evaluate(() => scrollBy(0, -260));
+await x.waitForTimeout(800);
 await reply.click();
-await x.waitForTimeout(450);
+await x.waitForTimeout(900);
+// A second click on a flagged reply only shows the bullets again. A raw
+// mouse click, so nothing scrolls (a scroll hides the bubble).
+const target = await reply.boundingBox();
+await x.mouse.click(target.x + target.width / 2, target.y + target.height / 2);
+await x.waitForTimeout(250);
 const clip = await x.evaluate((author) => {
+  const host = [...document.querySelectorAll("span.slophunter")].find((h) => h.closest(`[data-href^="/${author}/status/"]`));
+  const answer = host.closest("[data-href]").getBoundingClientRect();
   const post = document.querySelector("article").getBoundingClientRect();
   const bar = document.querySelector('article [role="group"]').getBoundingClientRect();
-  const answer = document.querySelector(`[data-href^="/${author}/status/"]`).getBoundingClientRect();
-  const top = Math.max(bar.top - 150, 0);
+  const top = Math.max(Math.min(bar.top, answer.top) - 150, 0);
   return { x: post.left - 16, y: top, width: post.width + 32, height: answer.bottom - top };
 }, author);
 const replyShot = await x.screenshot({ clip });
@@ -73,12 +80,12 @@ const popupShot = await popup.screenshot({ clip: { x: 0, y: 0, width: 300, heigh
 
 const data = (png) => `data:image/png;base64,${png.toString("base64")}`;
 const css = `
-  @font-face { font-family: Rye; src: url(${font}); }
+  @font-face { font-family: Ultra; src: url(${font}); }
   * { margin: 0; box-sizing: border-box; }
-  body { width: var(--w); height: var(--h); overflow: hidden; display: grid; place-items: center;
-    background: radial-gradient(120% 100% at 50% 0%, #fbf6ec, #efe4cf); color: #2b1e14; font-family: system-ui, sans-serif; }
-  h1 { font: 400 54px/1 Rye, serif; letter-spacing: .02em; text-align: center; }
-  .shot { border-radius: 18px; box-shadow: 0 30px 80px rgba(43,30,20,.22), 0 0 0 1px rgba(43,30,20,.08); overflow: hidden; background: #fff; }
+  html { background: radial-gradient(120% 100% at 50% 0%, #faf4e7, #e6d9be) no-repeat; background-size: var(--w) var(--h); }
+  body { width: var(--w); height: var(--h); overflow: hidden; display: grid; place-items: center; color: #2a1c12; font-family: system-ui, sans-serif; }
+  h1 { font: 400 50px/1 Ultra, serif; text-align: center; }
+  .shot { border-radius: 18px; box-shadow: 0 30px 80px rgba(42,28,18,.22), 0 0 0 1px rgba(42,28,18,.08); overflow: hidden; background: #fff; }
 `;
 const renderer = await chromium.launch({ channel: "chromium" });
 const canvas = await renderer.newContext({ deviceScaleFactor: 1 });
@@ -94,7 +101,7 @@ const render = async (name, width, height, body) => {
 await render("screenshots/1-flag.png", 1280, 800, `
   <div style="display:grid;gap:40px;justify-items:center">
     <h1>One click. One bullet.</h1>
-    <img class="shot" src="${data(replyShot)}" style="width:760px">
+    <img class="shot" src="${data(replyShot)}" style="width:860px">
   </div>`);
 
 await render("screenshots/2-popup.png", 1280, 800, `
@@ -109,8 +116,8 @@ await render("promo-440x280.png", 440, 280, `
   <div style="display:grid;gap:14px;justify-items:center">
     <img src="${icon}" width="92" height="92">
     <div style="display:grid;justify-items:center;gap:4px;text-transform:uppercase">
-      <span style="font:400 40px/1 Rye,serif;color:#b4532a;letter-spacing:.04em">Wanted</span>
-      <span style="font:400 19px/1 Rye,serif;letter-spacing:.14em">AI slop</span>
+      <span style="font:400 40px/1 Ultra,serif;letter-spacing:.02em">Wanted</span>
+      <span style="font:400 22px/1 Ultra,serif;color:#a23b2d;letter-spacing:.04em">AI slop</span>
     </div>
   </div>`);
 
@@ -118,8 +125,8 @@ await render("promo-1400x560.png", 1400, 560, `
   <div style="display:flex;gap:56px;align-items:center">
     <img src="${icon}" width="220" height="220">
     <div style="display:grid;gap:10px;text-transform:uppercase">
-      <span style="font:400 104px/1 Rye,serif;color:#b4532a;letter-spacing:.04em">Wanted</span>
-      <span style="font:400 46px/1 Rye,serif;letter-spacing:.14em">AI slop</span>
+      <span style="font:400 100px/1 Ultra,serif;letter-spacing:.02em">Wanted</span>
+      <span style="font:400 54px/1 Ultra,serif;color:#a23b2d;letter-spacing:.04em">AI slop</span>
     </div>
   </div>`);
 

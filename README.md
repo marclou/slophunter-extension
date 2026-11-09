@@ -98,4 +98,4 @@ Or load `dist/dev` from `chrome://extensions` (Developer mode → Load unpacked)
 
 ## License
 
-[MIT](LICENSE). The Rye typeface in `src/fonts` is by Sorkin Type, under the [SIL Open Font License](src/fonts/OFL.txt).
+[MIT](LICENSE). Fonts in `src/fonts`: Ultra by Astigmatic ([Apache 2.0](src/fonts/LICENSE-Ultra.txt)) and Schibsted Grotesk by Schibsted ([SIL Open Font License](src/fonts/OFL-SchibstedGrotesk.txt)).
