@@ -89,11 +89,12 @@ Building and verifying need Node.js 22.12 or newer and nothing else: no `npm ins
 npm install                                   # Playwright, for the end-to-end tests
 npm run mock                                  # local SlopHunter API on http://127.0.0.1:8787
 npm run dev                                   # dist/dev, pointed at the mock
+npm run browser                               # Chromium with the dev build, on x.com
 npm test                                      # unit tests
 npm run test:e2e                              # Chromium + mock API + test pages
 ```
 
-Load `dist/dev` from `chrome://extensions` (Developer mode → Load unpacked). Dev builds have a fixed ID, `kkhehjjmafpclphfoifofbjnmiabmgif`, which the SlopHunter website accepts, so `npm run dev -- --site https://slophunter.vercel.app` gives a dev build that works with the real site.
+Or load `dist/dev` from `chrome://extensions` (Developer mode → Load unpacked). Dev builds have a fixed ID, `kkhehjjmafpclphfoifofbjnmiabmgif`, which the SlopHunter website accepts, so `npm run dev -- --site https://slophunter.vercel.app` gives a dev build that works with the real site.
 
 ## License
 
