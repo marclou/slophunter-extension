@@ -340,6 +340,7 @@
     if (res?.error === "no_bullets") return say(button, ammoView());
     if (res?.error === "not_eligible" || res?.error === "suspended") return say(button, textView(REASONS[res.reason ?? (res.error === "suspended" ? "suspended" : "premium")]));
     if (res?.error === "own_post") return entry.host.remove();
+    if (!res?.status || res.status >= 500 || res.error === "rate_limited") return say(button, textView("Try again"));
   }
 
   function spendOne(bullets) {

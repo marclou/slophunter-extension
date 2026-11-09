@@ -38,6 +38,7 @@ export function startMock({ port = 8787, host = "127.0.0.1", username = "hunter"
     const path = url.pathname;
     if (path.startsWith("/api/extension/")) {
       if (method === "OPTIONS") return send(res, 204);
+      if (state.isDown) return send(res, 503, { error: "unavailable", message: "Try again in a minute" });
       const token = /^Bearer (sh_[A-Za-z0-9_-]+)$/.exec(req.headers.authorization ?? "")?.[1];
       if (!token || !state.tokens.has(token)) return send(res, 401, { error: "unauthorized" });
       if (method === "GET" && path === "/api/extension/me") return send(res, 200, me());
@@ -65,6 +66,7 @@ export function startMock({ port = 8787, host = "127.0.0.1", username = "hunter"
       if ("remaining" in patch) state.spent = Array.from({ length: 10 - patch.remaining }, (_, i) => Date.now() - HOUR + (i + 1) * (patch.spacingMs ?? 60_000));
       if ("closed" in patch) state.closed = new Set(patch.closed);
       if ("revokeAll" in patch) state.tokens.clear();
+      if ("isDown" in patch) state.isDown = patch.isDown;
       if ("week" in patch) state.week = patch.week;
       if ("avatarUrl" in patch) state.user.avatarUrl = patch.avatarUrl;
       if ("username" in patch) state.user.username = patch.username;
@@ -169,7 +171,8 @@ function connectPage(ext) {
         const { token } = await (await fetch("/dev/token", { method: "POST" })).json();
         if (!window.chrome?.runtime?.sendMessage) return (state.textContent = "Install the extension");
         chrome.runtime.sendMessage(ext, { type: "slophunter:connect", token }, (res) => {
-          state.textContent = res?.ok ? "Connected as @" + res.username : "Install the extension";
+          if (chrome.runtime.lastError || !res) return (state.textContent = "Install the extension");
+          state.textContent = res.ok ? "Connected as @" + res.username : "Try again (" + res.error + ")";
         });
       };
     </script>`;

@@ -45,9 +45,9 @@ const fromSite = {
   },
 
   "slophunter:connect": async ({ token }) => {
-    if (typeof token !== "string" || !TOKEN.test(token)) return { ok: false };
+    if (typeof token !== "string" || !TOKEN.test(token)) return { ok: false, error: "invalid_token" };
     const res = await call("GET", "/me", token);
-    if (res.status !== 200 || !res.data?.user) return { ok: false };
+    if (res.status !== 200 || !res.data?.user) return { ok: false, error: res.data?.error ?? (res.status ? "unavailable" : "network") };
     await chrome.storage.local.set({ token, me: fresh(res.data), checkedAt: Date.now() });
     await paintBadge();
     return { ok: true, username: res.data.user.username };

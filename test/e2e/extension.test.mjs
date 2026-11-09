@@ -135,6 +135,19 @@ test("out of bullets: nothing is sent", async () => {
   await fetch(`${mock.url}/dev/state`, { method: "POST", body: JSON.stringify({ remaining: 8 }) });
 });
 
+test("server errors: the flag is rolled back and the bubble says to try again", async () => {
+  await worker.evaluate(() => chrome.storage.local.set({ checkedAt: 0 }));
+  const popup = await openPopup();
+  await waitFor(async () => (await storage()).me.bullets.remaining === 8);
+  await popup.close();
+  await fetch(`${mock.url}/dev/state`, { method: "POST", body: JSON.stringify({ isDown: true }) });
+  await host(x, "carol").click();
+  await waitFor(async () => (await texts(x)).includes("Try again"));
+  assert.equal((await states(x)).carol, "Flag as AI slop");
+  assert.ok(!(await storage()).me.reports.some((r) => r.postId === "1000000000000000003"));
+  await fetch(`${mock.url}/dev/state`, { method: "POST", body: JSON.stringify({ isDown: false }) });
+});
+
 test("popup: earnings, points, rank, confirmed, bullets", async () => {
   await worker.evaluate(() => chrome.storage.local.set({ checkedAt: 0 }));
   const popup = await openPopup();
@@ -204,6 +217,13 @@ async function states(page) {
   const names = nodes.filter((n) => n.role?.value === "button" && labels.has(n.name?.value)).map((n) => n.name.value);
   const authors = await page.evaluate(() => [...document.querySelectorAll("span.slophunter")].map((h) => h.closest("[data-href]").dataset.href.split("/")[1]));
   return Object.fromEntries(authors.map((a, i) => [a, names[i]]));
+}
+
+async function texts(page) {
+  const cdp = await page.context().newCDPSession(page);
+  const { nodes } = await cdp.send("Accessibility.getFullAXTree");
+  await cdp.detach();
+  return nodes.map((n) => n.name?.value).filter(Boolean);
 }
 
 async function waitFor(check, timeout = 5000) {
