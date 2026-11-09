@@ -11,6 +11,7 @@
       <header class="who">
         <span class="avatar">
           <img id="avatar" alt="" width="28" height="28" referrerpolicy="no-referrer" />
+          <span id="initial" aria-hidden="true"></span>
         </span>
         <span id="handle" class="handle"></span>
         <svg class="x-logo" viewBox="0 0 24 24" role="img" aria-label="X account">
@@ -20,39 +21,51 @@
 
       <section class="reward">
         <output id="earnings" class="money">$0.00</output>
-        <span class="caption">est. this week</span>
+        <span class="label">This week · estimated</span>
       </section>
 
-      <section class="ledger">
-        <div><strong id="points">0</strong><span>points</span></div>
-        <div><strong id="rank">–</strong><span>rank</span></div>
-        <div><strong id="confirmed">0</strong><span>confirmed</span></div>
+      <section class="stats">
+        <div><strong id="points">0</strong><span class="label">Points</span></div>
+        <div><strong id="rank">–</strong><span class="label">Rank</span></div>
+        <div><strong id="confirmed">0</strong><span class="label">Confirmed</span></div>
       </section>
 
       <section id="ammo" class="ammo">
-        <span id="pips" class="pips" role="img"></span>
-        <span id="reload" class="reload"></span>
+        <span id="bullets" class="bullets" role="img"></span>
+        <span id="reload" class="label"></span>
       </section>
       <p id="stamp" class="stamp" hidden></p>
 
       <a id="dashboard" class="button" target="_blank" rel="noopener">Dashboard</a>
       <footer>
-        <a data-link="privacy" target="_blank" rel="noopener">Privacy</a>
-        <span aria-hidden="true">·</span>
-        <button id="disconnect" type="button">Disconnect</button>
+        <a data-link="privacy" class="link" target="_blank" rel="noopener">Privacy</a>
+        <button id="disconnect" class="link" type="button">Disconnect</button>
       </footer>
     </main>
 
     <main id="welcome" class="view" hidden>
-      <h1 class="poster">
-        <span class="wanted">Wanted</span>
-        <img class="mark" src="mark.svg" alt="" width="64" height="64" />
-        <span class="slop">AI slop</span>
-      </h1>
-      <a id="connect" class="button rust" target="_blank" rel="noopener">Connect X</a>
+      <img class="mark" src="mark.svg" alt="" width="76" height="76" />
+      <h1 class="headline">Hunt AI slop</h1>
+      <a id="connect" class="button" target="_blank" rel="noopener">Connect X</a>
       <footer>
-        <a data-link="privacy" target="_blank" rel="noopener">Privacy</a>
+        <a data-link="privacy" class="link" target="_blank" rel="noopener">Privacy</a>
       </footer>
     </main>
+
+    <template id="bullet">
+      <svg viewBox="0 0 12 24" aria-hidden="true">
+        <path d="M6 1C3.9 2.7 2.7 5.6 2.7 9.3V10.5h6.6V9.3C9.3 5.6 8.1 2.7 6 1Z" fill="#c4683a" />
+        <path d="M6 1C5 2 4.4 4 4.2 6.2" fill="none" stroke="#e8a37b" stroke-width="0.8" stroke-linecap="round" />
+        <path d="M2.5 10.5h7v11h-7z" fill="#d2a03c" />
+        <path d="M3.4 11.2v9.6" stroke="#f3cf72" stroke-width="0.9" />
+        <path d="M1.5 21.5h9v1.5h-9z" fill="#a7781f" />
+      </svg>
+    </template>
+    <template id="bullet-spent">
+      <svg viewBox="0 0 12 24" aria-hidden="true" data-spent fill="none" stroke="#4a463f" stroke-width="1">
+        <path d="M2.5 10.5h7v11h-7z" />
+        <path d="M1.5 21.5h9v1.5h-9z" />
+      </svg>
+    </template>
   </body>
 </html>

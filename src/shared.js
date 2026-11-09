@@ -11,10 +11,9 @@
     return { left, max, next: waiting[0] ?? null };
   }
 
-  function formatWait(ms) {
-    const minutes = Math.max(1, Math.ceil(ms / MINUTE));
-    if (minutes <= 60) return `${minutes}m`;
-    return `${Math.floor(minutes / 60)}h${String(minutes % 60).padStart(2, "0")}`;
+  // Same wording as the site's dashboard.
+  function formatReload(ms) {
+    return `+1 in ${Math.max(1, Math.ceil(ms / MINUTE))} min`;
   }
 
   function formatMoney(cents) {
@@ -27,5 +26,5 @@
     });
   }
 
-  globalThis.SH = Object.freeze({ bulletsNow, formatWait, formatMoney });
+  globalThis.SH = Object.freeze({ bulletsNow, formatReload, formatMoney });
 })();

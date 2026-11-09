@@ -63,7 +63,7 @@ The package is built without bundling, minifying or downloading anything: [`scri
 ```sh
 git clone https://github.com/marclou/slophunter-extension
 cd slophunter-extension
-git checkout v1.0.1
+git checkout v1.0.2
 node scripts/build.mjs          # prints the SHA-256: compare it with the release's SHA256SUMS
 ```
 
@@ -78,7 +78,7 @@ The store adds its own signatures (`_metadata/`) and an `update_url` to the mani
 Check that a release zip was built by GitHub Actions from this repository:
 
 ```sh
-gh attestation verify slophunter-extension-v1.0.1.zip --repo marclou/slophunter-extension
+gh attestation verify slophunter-extension-v1.0.2.zip --repo marclou/slophunter-extension
 ```
 
 Building and verifying need Node.js 22.12 or newer and nothing else: no `npm install`.
@@ -99,4 +99,4 @@ Or load `dist/dev` from `chrome://extensions` (Developer mode → Load unpacked)
 
 ## License
 
-[MIT](LICENSE). Fonts in `src/fonts`: Ultra by Astigmatic ([Apache 2.0](src/fonts/LICENSE-Ultra.txt)) and Schibsted Grotesk by Schibsted ([SIL Open Font License](src/fonts/OFL-SchibstedGrotesk.txt)).
+[MIT](LICENSE). Fonts in `src/fonts`, all under the SIL Open Font License: [Anton](src/fonts/OFL-Anton.txt), [Barlow](src/fonts/OFL-Barlow.txt), [IBM Plex Mono](src/fonts/OFL-IBMPlexMono.txt) and [Big Shoulders Stencil](src/fonts/OFL-BigShouldersStencil.txt).

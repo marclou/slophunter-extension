@@ -12,7 +12,7 @@ const TOKEN = /^sh_[A-Za-z0-9_-]{20,200}$/;
 const POST_ID = /^\d{1,20}$/;
 const HANDLE = /^[A-Za-z0-9_]{1,15}$/;
 
-const COLORS = { ammo: "#b5532b", empty: "#a23b2d", text: "#faf4e7" };
+const COLORS = { ammo: "#ea3d24", empty: "#4a463f", text: "#efeae1" };
 
 chrome.runtime.onInstalled.addListener(({ reason }) => {
   if (reason === chrome.runtime.OnInstalledReason.INSTALL) openConnect();

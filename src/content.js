@@ -49,11 +49,12 @@
 
     .bubble {
       position: fixed; left: 0; top: 0; z-index: 1;
-      display: flex; align-items: center; gap: 8px; padding: 8px 11px;
-      border-radius: 999px; background: #2a1c12; color: #faf4e7;
-      font: 600 12px/1 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+      background: #0b0b0a; color: #efeae1;
+      font: 400 11px/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      letter-spacing: .12em; text-transform: uppercase;
       font-variant-numeric: tabular-nums; white-space: nowrap;
-      box-shadow: 0 8px 24px rgba(42, 28, 18, .28);
+      box-shadow: 0 0 0 1px #4a463f, 0 12px 30px rgba(0, 0, 0, .45);
       opacity: 0; transform: translate(-50%, calc(-100% - 6px)) scale(.96);
       transition: opacity .16s ease, transform .2s cubic-bezier(.2, .9, .3, 1.2);
       pointer-events: none;
@@ -61,21 +62,20 @@
     .bubble.below { transform: translate(-50%, 6px) scale(.96); }
     .bubble.show { opacity: 1; transform: translate(-50%, calc(-100% - 10px)); }
     .bubble.below.show { transform: translate(-50%, 10px); }
-    :host([data-theme="dark"]) .bubble { background: #f2e9d6; color: #2a1c12; box-shadow: 0 8px 24px rgba(0, 0, 0, .5); }
-    .pips { display: flex; gap: 3px; }
-    .pip { width: 5px; height: 12px; border-radius: 3px; background: linear-gradient(#d6ae52, #a87a22); }
-    .pip.spent { background: none; box-shadow: inset 0 0 0 1px currentColor; opacity: .3; }
-    .wait { opacity: .7; }
-    .wait.empty { opacity: 1; color: #e2836c; }
-    :host([data-theme="dark"]) .wait.empty { color: #a23b2d; }
-    .points { color: #d6ae52; font-weight: 700; }
-    :host([data-theme="dark"]) .points { color: #a87a22; }
+    .pips { display: flex; align-items: flex-end; gap: 3px; }
+    .pip { width: 5px; height: 12px; border-radius: 2.5px 2.5px 0 0; background: linear-gradient(#c4683a 0 36%, #d2a03c 36%); }
+    .pip.spent { height: 8px; border-radius: 0; background: none; box-shadow: inset 0 0 0 1px #4a463f; }
+    .wait { color: #aaa398; }
+    .wait.empty { color: #efeae1; }
+    .points { color: #e3b23c; }
     .connect {
-      all: unset; pointer-events: auto; cursor: pointer; padding: 6px 12px; margin: -3px -5px;
-      border-radius: 999px; background: #b5532b; color: #faf4e7; font-weight: 700;
+      all: unset; pointer-events: auto; cursor: pointer; padding: 7px 12px; margin: -4px -6px;
+      background: #ea3d24; color: #0b0b0a;
+      font: 700 12px/1 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; letter-spacing: .04em;
+      box-shadow: inset 0 -2px 0 rgb(0 0 0 / .28);
     }
-    .connect:hover { background: #8f3f1e; }
-    .connect:focus-visible { outline: 2px solid #d6ae52; outline-offset: 2px; }
+    .connect:hover { background: #ff4a2e; }
+    .connect:focus-visible { outline: 2px solid #ea3d24; outline-offset: 3px; }
 
     @media (prefers-reduced-motion: reduce) {
       .shot, .emoji, .bubble { transition: none; }
@@ -365,7 +365,7 @@
     pips.setAttribute("aria-label", `${left} of ${max} bullets`);
     for (let i = 0; i < max; i++) pips.append(el("span", i < left ? "pip" : "pip spent"));
     view.append(pips);
-    if (next) view.append(el("span", left ? "wait" : "wait empty", `↻ ${SH.formatWait(next - Date.now())}`));
+    if (next) view.append(el("span", left ? "wait" : "wait empty", SH.formatReload(next - Date.now())));
     return view;
   }
 

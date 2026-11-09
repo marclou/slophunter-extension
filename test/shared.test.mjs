@@ -23,11 +23,10 @@ test("bullets: never above max, safe without data", () => {
   assert.deepEqual(SH.bulletsNow(undefined, NOW), { left: 0, max: 10, next: null });
 });
 
-test("wait times", () => {
-  assert.equal(SH.formatWait(10_000), "1m");
-  assert.equal(SH.formatWait(42 * 60_000), "42m");
-  assert.equal(SH.formatWait(60 * 60_000), "60m");
-  assert.equal(SH.formatWait(95 * 60_000), "1h35");
+test("next reload, worded like the site", () => {
+  assert.equal(SH.formatReload(10_000), "+1 in 1 min");
+  assert.equal(SH.formatReload(42 * 60_000), "+1 in 42 min");
+  assert.equal(SH.formatReload(60 * 60_000), "+1 in 60 min");
 });
 
 test("money", () => {

@@ -142,7 +142,7 @@ test("server errors: the flag is rolled back and the bubble says to try again", 
   await popup.close();
   await fetch(`${mock.url}/dev/state`, { method: "POST", body: JSON.stringify({ isDown: true }) });
   await host(x, "carol").click();
-  await waitFor(async () => (await texts(x)).includes("Try again"));
+  await waitFor(async () => (await texts(x)).some((text) => text.toLowerCase() === "try again"));
   assert.equal((await states(x)).carol, "Flag as AI slop");
   assert.ok(!(await storage()).me.reports.some((r) => r.postId === "1000000000000000003"));
   await fetch(`${mock.url}/dev/state`, { method: "POST", body: JSON.stringify({ isDown: false }) });
@@ -158,8 +158,9 @@ test("popup: earnings, points, rank, confirmed, bullets", async () => {
   assert.equal(await popup.textContent("#points"), "2");
   assert.equal(await popup.textContent("#rank"), "#12");
   assert.equal(await popup.textContent("#confirmed"), "1");
-  assert.equal(await popup.locator(".pip:not(.spent)").count(), 8);
-  assert.match(await popup.textContent("#reload"), /^↻ \d+m$/);
+  assert.equal(await popup.locator("#bullets svg:not([data-spent])").count(), 8);
+  assert.match(await popup.textContent("#reload"), /^\+1 in \d+ min$/);
+  assert.equal(await popup.locator(".button:visible").count(), 1, "one call to action per screen");
   assert.equal(await popup.getAttribute('[data-link="privacy"]', "href"), `${mock.url}/privacy`);
   if (SHOTS) await popup.screenshot({ path: join(SHOTS, "popup.png") });
   await popup.close();
@@ -181,6 +182,7 @@ test("disconnect revokes the token and wipes local data", async () => {
   await waitFor(() => mock.log.some((e) => e.method === "DELETE" && e.path === "/api/extension/token"));
   assert.deepEqual(await storage(), {});
   await popup.getByText("Connect X").waitFor();
+  assert.equal(await popup.locator(".button:visible").count(), 1, "one call to action per screen");
   await popup.waitForTimeout(700);
   if (SHOTS) await popup.screenshot({ path: join(SHOTS, "popup-welcome.png") });
   await popup.close();

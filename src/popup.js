@@ -42,7 +42,9 @@ function render() {
 
   const { user, week } = me;
   $("handle").textContent = `@${user.username}`;
-  if (user.avatarUrl && $("avatar").getAttribute("src") !== user.avatarUrl) {
+  $("initial").textContent = user.username.slice(0, 1);
+  if (!user.avatarUrl) $("avatar").classList.add("missing");
+  else if ($("avatar").getAttribute("src") !== user.avatarUrl) {
     $("avatar").classList.remove("missing");
     $("avatar").src = user.avatarUrl;
   }
@@ -62,22 +64,20 @@ function render() {
 function paintAmmo() {
   if (!me?.user?.eligible) return;
   const { left, max, next } = SH.bulletsNow(me.bullets);
-  const pips = $("pips");
-  pips.setAttribute("aria-label", `${left} of ${max} bullets`);
-  if (pips.children.length !== max) {
-    pips.replaceChildren(
+  const bullets = $("bullets");
+  const shown = bullets.dataset.left === String(left) && bullets.children.length === max;
+  if (!shown) {
+    bullets.replaceChildren(
       ...Array.from({ length: max }, (_, i) => {
-        const pip = document.createElement("span");
-        pip.style.animationDelay = isFirstPaint ? `${0.18 + i * 0.03}s` : "0s";
-        return pip;
+        const svg = $(i < left ? "bullet" : "bullet-spent").content.firstElementChild.cloneNode(true);
+        svg.style.animationDelay = isFirstPaint ? `${0.18 + i * 0.03}s` : "0s";
+        return svg;
       }),
     );
+    bullets.dataset.left = String(left);
   }
-  [...pips.children].forEach((pip, i) => (pip.className = i < left ? "pip" : "pip spent"));
-
-  const reload = $("reload");
-  reload.textContent = next ? `↻ ${SH.formatWait(next - Date.now())}` : "";
-  reload.classList.toggle("empty", left === 0);
+  bullets.setAttribute("aria-label", `${left} of ${max} bullets`);
+  $("reload").textContent = next ? SH.formatReload(next - Date.now()) : "Fully loaded";
 }
 
 function countTo(cents) {
