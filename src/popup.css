@@ -29,6 +29,10 @@
   display: none !important;
 }
 
+html {
+  background: var(--paper);
+}
+
 body {
   width: 300px;
   padding: 18px 18px 14px;

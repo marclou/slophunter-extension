@@ -167,6 +167,8 @@ test("disconnect revokes the token and wipes local data", async () => {
   await popup.locator("#welcome").waitFor();
   await waitFor(() => mock.log.some((e) => e.method === "DELETE" && e.path === "/api/extension/token"));
   assert.deepEqual(await storage(), {});
+  await popup.getByText("Connect X").waitFor();
+  await popup.waitForTimeout(700);
   if (SHOTS) await popup.screenshot({ path: join(SHOTS, "popup-welcome.png") });
   await popup.close();
 });
