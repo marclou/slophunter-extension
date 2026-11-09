@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>SlopHunter</title>
+    <link rel="stylesheet" href="popup.css" />
+    <script type="module" src="popup.js"></script>
+  </head>
+  <body class="loading">
+    <main id="hunter" class="view" hidden>
+      <header class="who">
+        <span class="avatar">
+          <img id="avatar" alt="" width="28" height="28" referrerpolicy="no-referrer" />
+        </span>
+        <span id="handle" class="handle"></span>
+        <svg class="x-logo" viewBox="0 0 24 24" role="img" aria-label="X account">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        </svg>
+      </header>
+
+      <section class="reward">
+        <output id="earnings" class="money">$0.00</output>
+        <span class="caption">est. this week</span>
+      </section>
+
+      <section class="ledger">
+        <div><strong id="points">0</strong><span>pts</span></div>
+        <div><strong id="rank">–</strong><span>rank</span></div>
+        <div><strong id="confirmed">0</strong><span>confirmed</span></div>
+      </section>
+
+      <section id="ammo" class="ammo">
+        <span id="pips" class="pips" role="img"></span>
+        <span id="reload" class="reload"></span>
+      </section>
+      <p id="stamp" class="stamp" hidden></p>
+
+      <a id="dashboard" class="button" target="_blank" rel="noopener">Dashboard</a>
+      <footer>
+        <a data-link="privacy" target="_blank" rel="noopener">Privacy</a>
+        <span aria-hidden="true">·</span>
+        <button id="disconnect" type="button">Disconnect</button>
+      </footer>
+    </main>
+
+    <main id="welcome" class="view" hidden>
+      <h1 class="wanted"><span>Wanted</span><span>AI slop</span></h1>
+      <a id="connect" class="button rust" target="_blank" rel="noopener">Connect X</a>
+      <footer>
+        <a data-link="privacy" target="_blank" rel="noopener">Privacy</a>
+      </footer>
+    </main>
+  </body>
+</html>

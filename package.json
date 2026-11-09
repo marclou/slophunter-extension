@@ -1,0 +1,22 @@
+{
+  "name": "slophunter-extension",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hunt AI slop on X. The open-source SlopHunter Chrome extension.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs --dev",
+    "mock": "node dev/mock-server.mjs",
+    "verify": "node scripts/verify.mjs",
+    "test": "node --test test/*.test.mjs",
+    "test:e2e": "node --test --test-concurrency=1 test/e2e/*.test.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.65.0"
+  }
+}
