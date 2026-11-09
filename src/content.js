@@ -34,7 +34,9 @@
     .shot:hover .emoji, .shot:focus-visible .emoji { filter: none; opacity: 1; transform: scale(1.12); }
     .shot:active { transform: scale(.9); }
     .shot:focus-visible { outline: 2px solid #B4532A; outline-offset: 1px; }
-    .shot[data-state="flagged"] { background: rgba(180, 83, 42, .18); }
+    .shot[data-state="flagged"] { background: rgba(180, 83, 42, .16); box-shadow: inset 0 0 0 1.5px rgba(180, 83, 42, .6); }
+    :host([data-theme="dark"]) .shot:hover { background: rgba(222, 120, 80, .16); }
+    :host([data-theme="dark"]) .shot[data-state="flagged"] { background: rgba(222, 120, 80, .2); box-shadow: inset 0 0 0 1.5px rgba(232, 132, 92, .8); }
     .shot[data-state="confirmed"] { background: rgba(196, 154, 66, .22); box-shadow: inset 0 0 0 1.5px rgba(196, 154, 66, .8); }
     .shot[data-state="flagged"] .emoji, .shot[data-state="confirmed"] .emoji { filter: none; opacity: 1; }
     .shot[data-state="invalidated"] .emoji { opacity: .25; }
