@@ -15,7 +15,7 @@ const OUT = join(ROOT, "store");
 const POST = process.env.STORE_POST ?? "https://x.com/marclou/status/2119757141787787609";
 const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36";
 const font = `data:font/woff2;base64,${readFileSync(join(ROOT, "src/fonts/ultra-latin.woff2")).toString("base64")}`;
-const icon = `data:image/svg+xml;base64,${readFileSync(join(ROOT, "assets/icon.svg")).toString("base64")}`;
+const icon = `data:image/svg+xml;base64,${readFileSync(join(ROOT, "src/mark.svg")).toString("base64")}`;
 const author = new URL(POST).pathname.split("/")[1];
 
 mkdirSync(join(OUT, "screenshots"), { recursive: true });
@@ -89,12 +89,14 @@ const css = `
 `;
 const renderer = await chromium.launch({ channel: "chromium" });
 const canvas = await renderer.newContext({ deviceScaleFactor: 1 });
+// The store icon keeps a transparent 16px margin around a 96px mark.
 const render = async (name, width, height, body) => {
+  const isIcon = name.includes("icon");
   const page = await canvas.newPage();
   await page.setViewportSize({ width, height });
-  await page.setContent(`<!doctype html><style>${css} :root{--w:${width}px;--h:${height}px}</style>${body}`);
+  await page.setContent(`<!doctype html><style>${css} :root{--w:${width}px;--h:${height}px}${isIcon ? " html{background:none}" : ""}</style>${body}`);
   await page.evaluate(() => document.fonts.ready);
-  await page.screenshot({ path: join(OUT, name), omitBackground: name.includes("icon") });
+  await page.screenshot({ path: join(OUT, name), omitBackground: isIcon });
   await page.close();
 };
 

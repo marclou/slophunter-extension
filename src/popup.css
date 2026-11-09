@@ -299,8 +299,9 @@ footer button:hover {
   letter-spacing: 0.02em;
 }
 
-.poster .emoji {
-  font: 44px/1 "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+.poster .mark {
+  width: 64px;
+  height: 64px;
   filter: drop-shadow(0 6px 8px rgba(42, 28, 18, 0.2));
 }
 
