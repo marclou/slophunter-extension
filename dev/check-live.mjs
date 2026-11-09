@@ -1,7 +1,8 @@
 // Checks a browser started with `npm run browser -- --site <site>` against the
-// real API, after you've connected the extension there.
-//   POST=https://x.com/<handle>/status/<id> [FLAG=1] [SHOTS=dir] node dev/check-live.mjs [--port 9333]
-// FLAG=1 really flags the first reply by someone else: it spends a bullet.
+// real API, after you've connected the extension there. One page load on X.
+//   POST=https://x.com/<handle>/status/<id> [FLAG=/<handle>/status/<id>] [SHOTS=dir] node dev/check-live.mjs [--port 9333]
+// FLAG really flags that one reply, so pick one that is clearly AI slop. It
+// spends a bullet. Nothing else is clicked on X.
 import assert from "node:assert/strict";
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
@@ -55,8 +56,9 @@ if (POST) {
   step("x.com", `${posts.length} posts on screen, 💩 on ${withButton.length} replies, none on the post`);
 
   if (FLAG) {
-    const target = withButton.find((p) => p.href.split("/")[1].toLowerCase() !== fresh.user.username.toLowerCase());
-    assert.ok(target, "no reply by someone else on screen");
+    assert.match(FLAG, /^\/[A-Za-z0-9_]{1,15}\/status\/\d{1,20}$/, "FLAG is a reply's path, like /handle/status/123");
+    const target = withButton.find((p) => p.href === FLAG);
+    assert.ok(target, `${FLAG} isn't on screen with a 💩`);
     const before = fresh.bullets.remaining;
     await x.locator(`[data-href="${target.href}"] span.slophunter`).first().click();
     const postId = target.href.split("/")[3];
