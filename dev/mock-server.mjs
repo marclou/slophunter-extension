@@ -62,9 +62,12 @@ export function startMock({ port = 8787, host = "127.0.0.1", username = "hunter"
       const patch = JSON.parse(body || "{}");
       if ("eligible" in patch) state.user.eligible = patch.eligible;
       if ("reason" in patch) state.user.reason = patch.reason;
-      if ("remaining" in patch) state.spent = Array.from({ length: 10 - patch.remaining }, (_, i) => Date.now() - HOUR + (i + 1) * 60_000);
+      if ("remaining" in patch) state.spent = Array.from({ length: 10 - patch.remaining }, (_, i) => Date.now() - HOUR + (i + 1) * (patch.spacingMs ?? 60_000));
       if ("closed" in patch) state.closed = new Set(patch.closed);
       if ("revokeAll" in patch) state.tokens.clear();
+      if ("week" in patch) state.week = patch.week;
+      if ("avatarUrl" in patch) state.user.avatarUrl = patch.avatarUrl;
+      if ("username" in patch) state.user.username = patch.username;
       return send(res, 200, { ok: true });
     }
     if (method === "GET" && path === "/dev/log") return send(res, 200, log);
@@ -79,7 +82,7 @@ export function startMock({ port = 8787, host = "127.0.0.1", username = "hunter"
     return {
       user: state.user,
       bullets: { remaining: 10 - state.spent.length, max: 10, reloadsAt: state.spent.map((t) => new Date(t + HOUR).toISOString()).sort() },
-      week: { points, rank: points ? 12 : null, estimatedEarningsCents: points * 31, confirmedReports: reports.filter((r) => r.status === "confirmed").length, bountyCents: 50_000, endsAt: "2026-11-16T00:00:00.000Z" },
+      week: state.week ?? { points, rank: points ? 12 : null, estimatedEarningsCents: points * 31, confirmedReports: reports.filter((r) => r.status === "confirmed").length, bountyCents: 50_000, endsAt: "2026-11-16T00:00:00.000Z" },
       reports: reports.map(({ postId, status, points }) => ({ postId, status, points })),
     };
   }

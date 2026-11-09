@@ -9,7 +9,7 @@
 
   const { SH } = globalThis;
   const STATUS_PATH = /^\/([A-Za-z0-9_]{1,15})\/status\/(\d{1,20})\/?$/;
-  const STATUS_PAGE = /^\/[A-Za-z0-9_]{1,15}\/status\/\d{1,20}/;
+  const STATUS_PAGE = /^\/[A-Za-z0-9_]{1,15}\/status\/(\d{1,20})/;
   const PROFILE_HREF = /^(?:https:\/\/(?:www\.)?x\.com)?\/([A-Za-z0-9_]{1,15})\/?$/i;
   const NOT_HANDLES = new Set(["home", "explore", "notifications", "messages", "i", "settings", "search", "compose", "hashtag", "bookmarks", "lists", "communities", "premium", "jobs", "tos", "privacy"]);
   const BUBBLE_MS = 2400;
@@ -138,12 +138,12 @@
     if (!isAlive()) return shutdown();
     checkTheme();
     for (const entry of buttons) if (!entry.host.isConnected) buttons.delete(entry);
-    const thread = readThread();
-    for (const article of document.querySelectorAll("article")) decorate(article, thread);
+    const items = [...document.querySelectorAll("article")].map((article) => ({ article, post: readPost(article) }));
+    const thread = readThread(items.filter((item) => item.post));
+    for (const { article, post } of items) decorate(article, post, thread);
   }
 
-  function decorate(article, thread) {
-    const post = readPost(article);
+  function decorate(article, post, thread) {
     const isWanted = post && !isOwnPost(post) && isReply(article, post, thread);
     let entry = entries.get(article);
 
@@ -190,22 +190,27 @@
     return Boolean(me?.user?.username) && me.user.username.toLowerCase() === post.author.toLowerCase();
   }
 
-  // On a post's page, every post below the first one is a reply, up to any
-  // section heading X adds after the replies (recommended posts).
-  function readThread() {
-    if (!STATUS_PAGE.test(location.pathname)) return null;
+  // A post's page shows the post, the posts it replies to above it, and its
+  // replies below, then any section X adds after them (recommended posts).
+  // X unmounts posts scrolled far away, so the post itself may be missing.
+  function readThread(items) {
+    const focalId = STATUS_PAGE.exec(location.pathname)?.[1];
+    if (!focalId) return null;
     const root = document.querySelector('[id^="urt:conversation:"]') ?? document.querySelector('[data-testid="primaryColumn"]') ?? document.querySelector("main");
     if (!root) return null;
-    const posts = [...root.querySelectorAll("article")].filter((a) => !a.parentElement?.closest("article"));
+    const posts = items.filter(({ article }) => root.contains(article)).map(({ article }) => article);
+    const focal = items.find(({ article, post }) => post.id === focalId && root.contains(article))?.article;
     const heading = posts[0] && [...root.querySelectorAll('h2, [role="heading"]')].find((h) => !h.closest("article") && posts[0].compareDocumentPosition(h) & Node.DOCUMENT_POSITION_FOLLOWING);
-    return { posts, heading };
+    return { posts, focalId, hasPostsAboveFocal: posts.indexOf(focal) > 0, heading };
   }
 
   function isReply(article, post, thread) {
-    if (thread) {
-      const index = thread.posts.indexOf(article);
-      const isAboveHeading = !thread.heading || thread.heading.compareDocumentPosition(article) & Node.DOCUMENT_POSITION_PRECEDING;
-      if (index > 0 && isAboveHeading) return true;
+    const index = thread ? thread.posts.indexOf(article) : -1;
+    const isAboveHeading = !thread?.heading || thread.heading.compareDocumentPosition(article) & Node.DOCUMENT_POSITION_PRECEDING;
+    if (index >= 0 && isAboveHeading) {
+      if (post.id === thread.focalId) return index > 0 || hasReplyContext(article, post);
+      // Above a reply's page, only the topmost post is not a reply.
+      return !(index === 0 && thread.hasPostsAboveFocal);
     }
     return hasReplyContext(article, post);
   }
@@ -384,7 +389,7 @@
     bubble.setAttribute("role", "status");
     root.append(bubble);
     document.documentElement.append(host);
-    addEventListener("scroll", hideBubble, { passive: true, capture: true });
+    addEventListener("scroll", hideBubble, { passive: true });
     return { host, bubble, timer: 0 };
   }
 

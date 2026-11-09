@@ -8,7 +8,7 @@ import { after, before, test } from "node:test";
 import { chromium } from "playwright";
 import { startMock } from "../../dev/mock-server.mjs";
 import { buildDev } from "../../scripts/build.mjs";
-import { homePage, statusPage } from "../fixtures/x.mjs";
+import { homePage, replyStatusPage, scrolledStatusPage, statusPage } from "../fixtures/x.mjs";
 
 const SHOTS = process.env.SHOTS_DIR;
 let mock, context, worker, extensionId, x;
@@ -25,8 +25,13 @@ before(async () => {
     args: [`--disable-extensions-except=${ext}`, `--load-extension=${ext}`],
   });
   await context.route("https://x.com/**", (route) => {
-    const { pathname } = new URL(route.request().url());
-    const body = pathname.startsWith("/alice/status/") ? statusPage() : pathname === "/home" ? homePage() : null;
+    const { pathname, search } = new URL(route.request().url());
+    const pages = {
+      "/alice/status/1000000000000000001": search === "?scrolled" ? scrolledStatusPage : statusPage,
+      "/bob/status/1000000000000000002": replyStatusPage,
+      "/home": homePage,
+    };
+    const body = pages[pathname]?.();
     return route.fulfill(body ? { contentType: "text/html", body } : { status: 404, body: "" });
   });
   worker = context.serviceWorkers()[0] ?? (await context.waitForEvent("serviceworker"));
@@ -86,6 +91,24 @@ test("flags survive a reload", async () => {
     const s = await states(x);
     return s.bob === "Flagged" && s.dave === "Confirmed by hunters" && s.carol === "Flag as AI slop";
   });
+});
+
+test("far down a thread, with the post itself unmounted, every reply keeps its 💩", async () => {
+  const page = await context.newPage();
+  await page.goto("https://x.com/alice/status/1000000000000000001?scrolled");
+  await page.locator("span.slophunter").first().waitFor();
+  await page.waitForTimeout(300);
+  assert.deepEqual(await flaggable(page), ["/carol/status/1000000000000000003", "/dave/status/1000000000000000007"]);
+  await page.close();
+});
+
+test("a reply's own page: the reply and its replies, not the post above", async () => {
+  const page = await context.newPage();
+  await page.goto("https://x.com/bob/status/1000000000000000002");
+  await page.locator("span.slophunter").first().waitFor();
+  await page.waitForTimeout(300);
+  assert.deepEqual(await flaggable(page), ["/bob/status/1000000000000000002", "/ivan/status/1000000000000000005"]);
+  await page.close();
 });
 
 test("timelines: a 💩 only on posts that reply to someone", async () => {
@@ -164,7 +187,9 @@ function host(page, author) {
 }
 
 function flaggable(page) {
-  return page.evaluate(() => [...document.querySelectorAll("span.slophunter")].map((h) => h.closest("[data-href]")?.dataset.href));
+  return page.evaluate(() =>
+    [...document.querySelectorAll("span.slophunter")].map((h) => h.closest("[data-href]")?.dataset.href ?? h.closest("article").querySelector('a[href*="/status/"]').getAttribute("href")),
+  );
 }
 
 // Button labels from Chrome's accessibility tree: the closed shadow root hides

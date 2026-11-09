@@ -77,6 +77,21 @@ export const statusPage = () =>
     post({ id: "1000000000000000009", author: "erin", text: "Unrelated recommended post" }),
   ]);
 
+// Far down a long thread: X has unmounted the post itself.
+export const scrolledStatusPage = () =>
+  page("urt:conversation:1000000000000000001:none:default", [
+    post({ id: "1000000000000000003", author: "carol", text: "Congrats Alice" }),
+    post({ id: "1000000000000000007", author: "dave", text: "Absolutely! Consistency is key. What's your top tip?" }),
+  ]);
+
+// A reply's own page: the post it replies to, the reply, then its replies.
+export const replyStatusPage = () =>
+  page("urt:conversation:1000000000000000002:none:default", [
+    post({ id: "1000000000000000001", author: "alice", text: "Shipping a new feature today." }),
+    post({ id: "1000000000000000002", author: "bob", text: "Great insight! This is a game-changer. 🚀", isFocal: true }),
+    post({ id: "1000000000000000005", author: "ivan", text: "Agreed!" }),
+  ]);
+
 // A timeline: one original post, one reply, one quote of a reply.
 export const homePage = () =>
   page("urt:home:following", [
