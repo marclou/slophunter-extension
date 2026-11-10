@@ -1,4 +1,4 @@
-<p align="center"><img src="src/mark.svg" width="88" alt=""></p>
+<p align="center"><img src="src/icons/128.png" width="96" alt=""></p>
 
 <h1 align="center">SlopHunter for Chrome</h1>
 
@@ -63,7 +63,7 @@ The package is built without bundling, minifying or downloading anything: [`scri
 ```sh
 git clone https://github.com/marclou/slophunter-extension
 cd slophunter-extension
-git checkout v1.0.2
+git checkout v1.0.3
 node scripts/build.mjs          # prints the SHA-256: compare it with the release's SHA256SUMS
 ```
 
@@ -78,7 +78,7 @@ The store adds its own signatures (`_metadata/`) and an `update_url` to the mani
 Check that a release zip was built by GitHub Actions from this repository:
 
 ```sh
-gh attestation verify slophunter-extension-v1.0.2.zip --repo marclou/slophunter-extension
+gh attestation verify slophunter-extension-v1.0.3.zip --repo marclou/slophunter-extension
 ```
 
 Building and verifying need Node.js 22.12 or newer and nothing else: no `npm install`.
@@ -90,7 +90,6 @@ npm install                                   # Playwright, for the end-to-end t
 npm run mock                                  # local SlopHunter API on http://127.0.0.1:8787
 npm run dev                                   # dist/dev, pointed at the mock
 npm run browser                               # Chromium with the dev build, on x.com
-npm run icons                                 # toolbar PNGs from src/mark.svg (needs rsvg-convert)
 npm test                                      # unit tests
 npm run test:e2e                              # Chromium + mock API + test pages
 ```

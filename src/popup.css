@@ -24,19 +24,15 @@
   font-display: block;
 }
 
-/* Tokens from slophunter.vercel.app. Red is for the one button and stamps, gold for money. */
+/* Tokens from slophunter.vercel.app: near-black, bone and red only. Red is for the one button and stamps. */
 :root {
   --paper: #0b0b0a;
   --paper-light: #141311;
   --paper-deep: #1e1c1a;
-  --line: #2c2a26;
-  --line-strong: #4a463f;
   --ink: #efeae1;
   --ink-soft: #aaa398;
   --ink-faint: #868077;
   --rust: #ea3d24;
-  --brass: #e3b23c;
-  --brass-bright: #ffd774;
   --stamp: #ff5440;
   --display: "Anton", Impact, "Arial Narrow", sans-serif;
   --sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
@@ -122,14 +118,6 @@ body.loading .view {
   text-transform: uppercase;
 }
 
-.avatar::after {
-  position: absolute;
-  inset: 0;
-  outline: 1px solid rgb(255 255 255 / 0.12);
-  outline-offset: -1px;
-  content: "";
-}
-
 .avatar img {
   position: absolute;
   inset: 0;
@@ -161,26 +149,18 @@ body.loading .view {
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  padding: 16px 0 14px;
-  border-block: 1px solid var(--line);
+  padding: 10px 0 4px;
 }
 
 .money {
+  color: var(--ink);
   font: 58px/0.95 var(--display);
   font-variant-numeric: tabular-nums;
-  background: linear-gradient(100deg, var(--brass) 0%, var(--brass) 42%, var(--brass-bright) 50%, var(--brass) 58%, var(--brass) 100%);
-  background-size: 220% auto;
-  background-clip: text;
-  color: transparent;
-  animation: shine 6s linear infinite;
 }
 
 .stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--line);
-  box-shadow: 0 0 0 1px var(--line);
 }
 
 .stats div {
@@ -188,8 +168,7 @@ body.loading .view {
   flex-direction: column;
   align-items: center;
   gap: 7px;
-  padding: 14px 4px 12px;
-  background: var(--paper);
+  padding: 8px 4px;
 }
 
 .stats strong {
@@ -326,16 +305,9 @@ footer {
   }
 }
 
-@keyframes shine {
-  to {
-    background-position: 220% center;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .view > *,
-  .bullets svg,
-  .money {
+  .bullets svg {
     animation: none;
   }
 

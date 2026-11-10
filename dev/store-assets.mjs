@@ -3,7 +3,7 @@
 // STORE_POST should be a post with replies by its own author: only that
 // account's posts end up in the screenshot. POPUP_OUT=<file.png> also saves
 // the popup on its own.
-import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -80,80 +80,55 @@ const popupHeight = await popup.evaluate(() => document.body.getBoundingClientRe
 const popupShot = await popup.screenshot({ clip: { x: 0, y: 0, width: 300, height: Math.ceil(popupHeight) } });
 if (process.env.POPUP_OUT) writeFileSync(process.env.POPUP_OUT, popupShot);
 
-// The site's look: near-black, a red lamp overhead, film grain, a faint scope.
+// The site's look: near-black, a red lamp overhead, film grain. Space and tone,
+// no borders, nothing behind the headline.
 const data = (png) => `data:image/png;base64,${png.toString("base64")}`;
 const grain = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`;
 const css = `
   @font-face { font-family: Anton; src: url(${font("anton-latin.woff2")}); }
-  @font-face { font-family: Plex; src: url(${font("ibm-plex-mono-latin.woff2")}); }
   * { margin: 0; box-sizing: border-box; }
   html { background-color: #0b0b0a; background-image: radial-gradient(70% 45% at 50% -8%, rgb(234 61 36 / .12), transparent 70%), radial-gradient(120% 90% at 50% 120%, rgb(0 0 0 / .6), transparent 60%), ${grain}; }
-  body { position: relative; width: var(--w); height: var(--h); overflow: hidden; display: grid; place-items: center; color: #efeae1; font-family: system-ui, sans-serif; }
+  body { width: var(--w); height: var(--h); overflow: hidden; display: grid; place-items: center; color: #efeae1; font-family: system-ui, sans-serif; }
   h1 { font: 400 64px/1 Anton, Impact, sans-serif; letter-spacing: .01em; text-align: center; text-transform: uppercase; }
-  .label { color: #868077; font: 400 var(--label, 14px)/1 Plex, monospace; letter-spacing: .14em; text-transform: uppercase; }
-  .shot { box-shadow: 0 0 0 1px rgb(255 255 255 / .16), 0 30px 70px -30px rgb(0 0 0 / .9); }
-  .scope { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .content { position: relative; }
+  .shot { box-shadow: 0 30px 70px -20px rgb(0 0 0 / .95); }
+  .wordmark { font: 400 var(--size)/0.9 Anton, Impact, sans-serif; letter-spacing: .01em; }
 `;
-const scope = (cx, cy, r) => `
-  <svg class="scope" aria-hidden="true">
-    <g fill="none" stroke="rgb(234 61 36 / .16)" stroke-width="2">
-      <circle cx="${cx}" cy="${cy}" r="${r}" />
-      <path d="M${cx} ${cy - r * 1.35}V${cy - r * 0.55}M${cx} ${cy + r * 0.55}V${cy + r * 1.35}M${cx - r * 1.35} ${cy}H${cx - r * 0.55}M${cx + r * 0.55} ${cy}H${cx + r * 1.35}" />
-    </g>
-  </svg>`;
 const renderer = await chromium.launch({ channel: "chromium" });
 const canvas = await renderer.newContext({ deviceScaleFactor: 1 });
-// The store icon keeps a transparent 16px margin around a 96px mark.
 const render = async (name, width, height, body) => {
-  const isIcon = name.includes("icon");
   const page = await canvas.newPage();
   await page.setViewportSize({ width, height });
-  await page.setContent(`<!doctype html><style>${css} :root{--w:${width}px;--h:${height}px}${isIcon ? " html{background:none}" : ""}</style>${body}`);
+  await page.setContent(`<!doctype html><style>${css} :root{--w:${width}px;--h:${height}px}</style>${body}`);
   await page.evaluate(() => document.fonts.ready);
-  await page.screenshot({ path: join(OUT, name), omitBackground: isIcon });
+  await page.screenshot({ path: join(OUT, name) });
   await page.close();
 };
 
 await render("screenshots/1-flag.png", 1280, 800, `
-  ${scope(640, 400, 330)}
-  <div class="content" style="display:grid;gap:40px;justify-items:center">
+  <div style="display:grid;gap:40px;justify-items:center">
     <h1>One click. One bullet.</h1>
     <img class="shot" src="${data(replyShot)}" style="width:860px">
   </div>`);
 
 await render("screenshots/2-popup.png", 1280, 800, `
-  ${scope(640, 430, 300)}
-  <div class="content" style="display:grid;gap:44px;justify-items:center">
+  <div style="display:grid;gap:44px;justify-items:center">
     <h1>Your bounty, live</h1>
     <img class="shot" src="${data(popupShot)}" style="width:390px">
   </div>`);
 
-await render("icon-128.png", 128, 128, `<img src="${icon}" width="96" height="96">`);
+// Same file as the extension's 128px icon: the tile at 96px in a transparent 16px margin.
+copyFileSync(join(ROOT, "src/icons/128.png"), join(OUT, "icon-128.png"));
 
 await render("promo-440x280.png", 440, 280, `
-  ${scope(220, 140, 118)}
-  <div class="content" style="display:grid;gap:14px;justify-items:center">
-    <img src="${icon}" width="104" height="104">
-    <span style="font:400 46px/1 Anton,Impact,sans-serif;letter-spacing:.01em">SLOPHUNTER</span>
-    <span class="label" style="--label:11px">Hunt AI slop on X</span>
+  <div style="display:grid;gap:20px;justify-items:center">
+    <img src="${icon}" width="112" height="112">
+    <span class="wordmark" style="--size:50px">SLOPHUNTER</span>
   </div>`);
 
 await render("promo-1400x560.png", 1400, 560, `
-  <div class="content" style="display:flex;gap:64px;align-items:center">
-    <div style="position:relative;width:250px;height:250px">
-      <svg viewBox="-200 -200 650 650" style="position:absolute;inset:-200px;width:650px;height:650px;overflow:visible" aria-hidden="true">
-        <g fill="none" stroke="rgb(234 61 36 / .16)" stroke-width="2">
-          <circle cx="125" cy="125" r="210" />
-          <path d="M125 -160V10M125 240V410M-160 125H10M240 125H410" />
-        </g>
-      </svg>
-      <img src="${icon}" width="250" height="250" style="position:relative">
-    </div>
-    <div style="display:grid;gap:22px">
-      <span style="font:400 150px/0.9 Anton,Impact,sans-serif;letter-spacing:.01em">SLOPHUNTER</span>
-      <span class="label" style="--label:22px">Hunt AI slop on X</span>
-    </div>
+  <div style="display:flex;gap:72px;align-items:center">
+    <img src="${icon}" width="260" height="260">
+    <span class="wordmark" style="--size:172px">SLOPHUNTER</span>
   </div>`);
 
 await renderer.close();

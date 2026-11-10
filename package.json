@@ -1,6 +1,6 @@
 {
   "name": "slophunter-extension",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "description": "Hunt AI slop on X. The open-source SlopHunter Chrome extension.",
   "license": "MIT",
@@ -11,7 +11,6 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "dev": "node scripts/build.mjs --dev",
-    "icons": "for s in 16 32 48 128; do rsvg-convert -w $s -h $s src/mark.svg -o src/icons/$s.png; done",
     "mock": "node dev/mock-server.mjs",
     "browser": "node dev/browser.mjs",
     "verify": "node scripts/verify.mjs",
