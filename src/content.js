@@ -30,20 +30,20 @@
       transition: filter .16s ease, opacity .16s ease, transform .2s cubic-bezier(.3, 1.6, .6, 1);
     }
     .ring { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
-    .shot:hover { background: rgba(181, 83, 43, .12); }
+    .shot:hover { background: rgba(234, 61, 36, .12); }
     .shot:hover .emoji, .shot:focus-visible .emoji { filter: none; opacity: 1; transform: scale(1.12); }
     .shot:active { transform: scale(.9); }
-    .shot:focus-visible { outline: 2px solid #b5532b; outline-offset: 1px; }
-    .shot[data-state="flagged"] { background: rgba(181, 83, 43, .16); box-shadow: inset 0 0 0 1.5px rgba(181, 83, 43, .6); }
-    :host([data-theme="dark"]) .shot:hover { background: rgba(222, 120, 80, .16); }
-    :host([data-theme="dark"]) .shot[data-state="flagged"] { background: rgba(222, 120, 80, .2); box-shadow: inset 0 0 0 1.5px rgba(232, 132, 92, .8); }
-    .shot[data-state="confirmed"] { background: rgba(214, 174, 82, .22); box-shadow: inset 0 0 0 1.5px rgba(214, 174, 82, .85); }
+    .shot:focus-visible { outline: 2px solid #ea3d24; outline-offset: 1px; }
+    .shot[data-state="flagged"] { background: rgba(234, 61, 36, .12); box-shadow: inset 0 0 0 1.5px rgba(234, 61, 36, .5); }
+    :host([data-theme="dark"]) .shot:hover { background: rgba(234, 61, 36, .16); }
+    :host([data-theme="dark"]) .shot[data-state="flagged"] { background: rgba(234, 61, 36, .14); box-shadow: inset 0 0 0 1.5px rgba(234, 61, 36, .55); }
+    .shot[data-state="confirmed"] { background: rgba(234, 61, 36, .2); box-shadow: inset 0 0 0 1.5px rgba(234, 61, 36, .85); }
     .shot[data-state="flagged"] .emoji, .shot[data-state="confirmed"] .emoji { filter: none; opacity: 1; }
     .shot[data-state="invalidated"] .emoji { opacity: .25; }
     .shot.fired .ring { animation: ring .55s ease-out; }
     .shot.fired .emoji { animation: recoil .45s cubic-bezier(.3, 1.5, .5, 1); }
     .shot.shake { animation: shake .32s ease; }
-    @keyframes ring { from { box-shadow: 0 0 0 0 rgba(181, 83, 43, .55); } to { box-shadow: 0 0 0 12px rgba(181, 83, 43, 0); } }
+    @keyframes ring { from { box-shadow: 0 0 0 0 rgba(234, 61, 36, .6); } to { box-shadow: 0 0 0 12px rgba(234, 61, 36, 0); } }
     @keyframes recoil { 30% { transform: scale(1.38) rotate(-8deg); } 60% { transform: scale(.94) rotate(3deg); } }
     @keyframes shake { 20% { transform: translateX(-3px); } 40% { transform: translateX(3px); } 60% { transform: translateX(-2px); } 80% { transform: translateX(2px); } }
 

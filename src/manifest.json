@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SlopHunter",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Flag AI slop replies on X in one click. Earn from sponsor-funded bounties for confirmed reports.",
   "homepage_url": "https://slophunter.vercel.app",
   "minimum_chrome_version": "116",

@@ -63,7 +63,7 @@ The package is built without bundling, minifying or downloading anything: [`scri
 ```sh
 git clone https://github.com/marclou/slophunter-extension
 cd slophunter-extension
-git checkout v1.0.3
+git checkout v1.0.4
 node scripts/build.mjs          # prints the SHA-256: compare it with the release's SHA256SUMS
 ```
 
@@ -78,7 +78,7 @@ The store adds its own signatures (`_metadata/`) and an `update_url` to the mani
 Check that a release zip was built by GitHub Actions from this repository:
 
 ```sh
-gh attestation verify slophunter-extension-v1.0.3.zip --repo marclou/slophunter-extension
+gh attestation verify slophunter-extension-v1.0.4.zip --repo marclou/slophunter-extension
 ```
 
 Building and verifying need Node.js 22.12 or newer and nothing else: no `npm install`.

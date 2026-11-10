@@ -1,6 +1,6 @@
 {
   "name": "slophunter-extension",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "description": "Hunt AI slop on X. The open-source SlopHunter Chrome extension.",
   "license": "MIT",
